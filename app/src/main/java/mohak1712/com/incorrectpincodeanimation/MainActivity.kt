@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         val joinEditText = getTransition(500)
         setUpListenersForTransition(joinEditText, { enableEditTexts(false) }) {
             startAnimationForUnderlineViews()
-            setUpListenerForUnderlineViewsAnimation()
+            setUpListenerForUnderlineViewsAnimation(false)
         }
         TransitionManager.beginDelayedTransition(root, joinEditText)
         constraintSet.applyTo(root)
@@ -116,13 +116,28 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         (view4.drawable as Animatable).start()
     }
 
-    private fun setUpListenerForUnderlineViewsAnimation() {
-        (view4.drawable as AnimatedVectorDrawableCompat).registerAnimationCallback(
-            object : Animatable2Compat.AnimationCallback() {
-                override fun onAnimationEnd(drawable: Drawable?) {
+    private fun setUpListenerForUnderlineViewsAnimation(reverseToInitialState: Boolean) {
+        (view4.drawable as AnimatedVectorDrawableCompat).registerAnimationCallback(object :
+            Animatable2Compat.AnimationCallback() {
+            override fun onAnimationEnd(drawable: Drawable?) {
+                if (!reverseToInitialState) {
                     setDrawableForUnderlineViews(R.drawable.wrong_pass_to_line_anim)
                     startAnimationForUnderlineViews()
+                    setUpListenerForUnderlineViewsAnimation(!reverseToInitialState)
+                } else {
+                    backToInitialState()
                 }
-            })
+            }
+        })
+    }
+
+    private fun backToInitialState() {
+        val transition = getTransition(500)
+        val constraintSet = getConstraintSet(R.layout.activity_main)
+        setUpListenersForTransition(transition, { enableEditTexts(false) }) {
+            enableEditTexts(true)
+        }
+        TransitionManager.beginDelayedTransition(root, transition)
+        constraintSet.applyTo(root)
     }
 }
