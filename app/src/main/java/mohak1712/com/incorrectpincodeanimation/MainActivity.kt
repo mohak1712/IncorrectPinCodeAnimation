@@ -1,5 +1,6 @@
 package mohak1712.com.incorrectpincodeanimation
 
+import android.graphics.drawable.Animatable
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         val constraintSet = getConstraintSet(R.layout.joined_underline_views)
         val transition = getTransition(1200)
         setUpListenersForTransition(transition, { enableEditTexts(false) }) {
-
+            joinPinTexts()
         }
         TransitionManager.beginDelayedTransition(root, transition)
         constraintSet.applyTo(root)
@@ -93,5 +94,22 @@ class MainActivity : AppCompatActivity(), MainActivityView {
 
     private fun setUpListenersForTransition(transition: Transition, startListener: () -> Unit, endListener: () -> Unit) {
         transition.addListener(TransitionListener({ startListener() }, { endListener() }))
+    }
+
+    private fun joinPinTexts() {
+        val constraintSet = getConstraintSet(R.layout.joined_texts)
+        val joinEditText = getTransition(500)
+        setUpListenersForTransition(joinEditText, { enableEditTexts(false) }) {
+            startAnimationForUnderlineViews()
+        }
+        TransitionManager.beginDelayedTransition(root, joinEditText)
+        constraintSet.applyTo(root)
+    }
+
+    private fun startAnimationForUnderlineViews() {
+        (view1.drawable as Animatable).start()
+        (view2.drawable as Animatable).start()
+        (view3.drawable as Animatable).start()
+        (view4.drawable as Animatable).start()
     }
 }
