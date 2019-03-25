@@ -2,8 +2,14 @@ package mohak1712.com.incorrectpincodeanimation
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.transition.ChangeBounds
+import androidx.transition.Transition
+import androidx.transition.TransitionManager
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -58,6 +64,34 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     }
 
     override fun error(response: String) {
+        Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+        joinUnderlineViews()
+    }
 
+    private fun joinUnderlineViews() {
+        val constraintSet = getConstraintSet(R.layout.joined_underline_views)
+        val transition = getTransition(1200)
+        setUpListenersForTransition(transition, { enableEditTexts(false) }) {
+
+        }
+        TransitionManager.beginDelayedTransition(root, transition)
+        constraintSet.applyTo(root)
+    }
+
+    private fun getConstraintSet(layout: Int): ConstraintSet {
+        val constrainSet = ConstraintSet()
+        constrainSet.clone(this, layout)
+        return constrainSet
+    }
+
+    private fun getTransition(animationDuration: Long): Transition {
+        val changeBoundsTransition = ChangeBounds()
+        changeBoundsTransition.duration = animationDuration
+        changeBoundsTransition.interpolator = AccelerateDecelerateInterpolator()
+        return changeBoundsTransition
+    }
+
+    private fun setUpListenersForTransition(transition: Transition, startListener: () -> Unit, endListener: () -> Unit) {
+        transition.addListener(TransitionListener({ startListener() }, { endListener() }))
     }
 }
