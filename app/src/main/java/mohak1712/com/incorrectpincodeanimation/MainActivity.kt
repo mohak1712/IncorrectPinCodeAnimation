@@ -117,8 +117,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
     }
 
     private fun setUpListenerForUnderlineViewsAnimation() {
-        AnimatedVectorDrawableCompat.registerAnimationCallback(
-            view4.drawable,
+        (view4.drawable as AnimatedVectorDrawableCompat).registerAnimationCallback(
             object : Animatable2Compat.AnimationCallback() {
                 override fun onAnimationEnd(drawable: Drawable?) {
                     setDrawableForUnderlineViews(R.drawable.wrong_pass_to_line_anim)
