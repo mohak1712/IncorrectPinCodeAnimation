@@ -1,6 +1,7 @@
 package mohak1712.com.incorrectpincodeanimation
 
 import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -11,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.transition.ChangeBounds
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -101,6 +103,7 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         val joinEditText = getTransition(500)
         setUpListenersForTransition(joinEditText, { enableEditTexts(false) }) {
             startAnimationForUnderlineViews()
+            setUpListenerForUnderlineViewsAnimation()
         }
         TransitionManager.beginDelayedTransition(root, joinEditText)
         constraintSet.applyTo(root)
@@ -111,5 +114,16 @@ class MainActivity : AppCompatActivity(), MainActivityView {
         (view2.drawable as Animatable).start()
         (view3.drawable as Animatable).start()
         (view4.drawable as Animatable).start()
+    }
+
+    private fun setUpListenerForUnderlineViewsAnimation() {
+        AnimatedVectorDrawableCompat.registerAnimationCallback(
+            view4.drawable,
+            object : Animatable2Compat.AnimationCallback() {
+                override fun onAnimationEnd(drawable: Drawable?) {
+                    setDrawableForUnderlineViews(R.drawable.wrong_pass_to_line_anim)
+                    startAnimationForUnderlineViews()
+                }
+            })
     }
 }
